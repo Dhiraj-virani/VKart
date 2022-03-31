@@ -1,0 +1,37 @@
+{
+  "name": "vkart",
+  "version": "1.0.0",
+  "description": "MERN Shopping Cart app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node backend/seeder",
+    "data:destroy": "node backend/seeder -d"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dhiraj-virani/VKart.git"
+  },
+  "author": "Dhiraj Virani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dhiraj-virani/VKart/issues"
+  },
+  "homepage": "https://github.com/Dhiraj-virani/VKart#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^5.10.6"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.4"
+  }
+}
