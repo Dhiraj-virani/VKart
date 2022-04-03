@@ -1,15 +1,15 @@
-import asyncHandler from "express-async-handler";
-import User from "../models/userModel.js";
-import generateToken from "../utils/generateToken.js";
+import asyncHandler from 'express-async-handler'
+import User from '../models/userModel.js'
+import generateToken from '../utils/generateToken.js'
 
 // @desc    AUTH User & Get Token
 // @route   Get /api/users/login
 // @access  Public
 
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email })
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -18,32 +18,32 @@ const authUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
-    });
+    })
   } else {
-    res.status(401);
-    throw new Error("Invalid email or password");
+    res.status(401)
+    throw new Error('Invalid email or password')
   }
-});
+})
 
 // @desc    Register User
 // @route   Post /api/users/
 // @access  Public
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password } = req.body
 
-  const userExist = await User.findOne({ email });
+  const userExist = await User.findOne({ email })
 
   if (userExist) {
-    res.status(400);
-    throw new Error("User already exist");
+    res.status(400)
+    throw new Error('User already exist')
   }
 
   const user = await User.create({
     name,
     email,
     password,
-  });
+  })
 
   if (user) {
     res.status(201).json({
@@ -52,19 +52,19 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
-    });
+    })
   } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+    res.status(400)
+    throw new Error('Invalid user data')
   }
-});
+})
 
 // @desc    Get user profile
 // @route   Get /api/users/profile
 // @access  Private
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id)
 
   if (user) {
     res.json({
@@ -72,11 +72,41 @@ const getUserProfile = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-    });
+    })
   } else {
-    res.status(401);
-    throw new Error("User not found");
+    res.status(401)
+    throw new Error('User not found')
   }
-});
+})
 
-export { authUser, getUserProfile, registerUser };
+// @desc    Update user profile
+// @route   Put /api/users/profile
+// @access  Private
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+
+  if (user) {
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+
+    if (req.body.password) {
+      user.password = req.body.password
+    }
+
+    const updateUser = await user.save()
+
+    res.json({
+      _id: updateUser._id,
+      name: updateUser.name,
+      email: updateUser.email,
+      isAdmin: updateUser.isAdmin,
+      token: generateToken(updateUser._id),
+    })
+  } else {
+    res.status(401)
+    throw new Error('User not found')
+  }
+})
+
+export { authUser, getUserProfile, registerUser, updateUserProfile }
