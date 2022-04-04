@@ -56,6 +56,7 @@ const PlaceOrderScreen = ({ history }) => {
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h2>Shipping</h2>
+             
               <p>
                 <strong>Address: </strong>
                 {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
@@ -74,7 +75,7 @@ const PlaceOrderScreen = ({ history }) => {
               {cart.cartItems.lenght === 0 ? (
                 <Message>Your cart is empty</Message>
               ) : (
-                <ListGroup>
+                <ListGroup variant="flush">
                   {cart.cartItems.map((item, index) => (
                     <ListGroup.Item key={index}>
                       <Row>
