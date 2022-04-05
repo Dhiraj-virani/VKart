@@ -14,6 +14,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     dispatch(logout())
+    console.log('History reached')
     
   }
   return (
