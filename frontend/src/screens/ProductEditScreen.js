@@ -1,13 +1,14 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button,  Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { listProductDetails, updateProduct } from '../actions/productActions'
+import { listProductDetails, updateProduct, deleteProduct } from '../actions/productActions'
 import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
+import ErrorModal from '../components/ErrorModal'
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id
@@ -20,6 +21,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [errorModal, setErrorModal] = useState(null)
 
   const dispatch = useDispatch()
 
@@ -91,8 +93,36 @@ const ProductEditScreen = ({ match, history }) => {
     )
   }
 
+  const deleteHandler = (id) => {
+    dispatch(deleteProduct(productId))
+    history.push('/admin/productlist')
+    // console.log(productId)
+    setErrorModal(null)
+  }
+
+  const errorModalCard = (id) => {
+    setErrorModal({
+      title: 'Delete Product?',
+      message: 'Please confirm to delete the product',
+      id,
+    })
+  }
+
+  const clearErrorModal = () => {
+    setErrorModal(null)
+  }
+
   return (
     <>
+      {errorModal && (
+        <ErrorModal
+          title={errorModal.title}
+          message={errorModal.message}
+          onConfirm={deleteHandler}
+          // onConfirm={() => deleteHandler(errorModal.id)}
+          onCancel={clearErrorModal}
+        />
+      )}
       <Link to="/admin/productlist" className="btn btn-light my-3">
         Go Back
       </Link>
@@ -105,7 +135,7 @@ const ProductEditScreen = ({ match, history }) => {
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
-          <Form onSubmit={submitHandler}>
+          <Form>
             <Form.Group controlId="name">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -185,10 +215,24 @@ const ProductEditScreen = ({ match, history }) => {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
-
-            <Button className="mt-3" type="submit" variant="primary">
-              Update
-            </Button>
+            <Col className='mt-3'>
+              <Button
+                className="m-1"
+                type="button"
+                onClick={submitHandler}
+                variant="primary"
+              >
+                Update
+              </Button>
+              <Button
+                className="m-1"
+                type="button"
+                onClick={errorModalCard}
+                variant="primary"
+              >
+                Delete
+              </Button>
+            </Col>
           </Form>
         )}
       </FormContainer>

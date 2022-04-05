@@ -32,6 +32,7 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({
       type: USER_LOGIN_REQUEST,
     })
+    
 
     const config = {
       headers: {
@@ -214,7 +215,6 @@ export const listUsers = () => async (dispatch, getState) => {
     })
   }
 }
-
 
 export const deleteUsers = (id) => async (dispatch, getState) => {
   try {

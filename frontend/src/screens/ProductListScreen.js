@@ -15,7 +15,9 @@ import ErrorModal from '../components/ErrorModal'
 
 const ProductListScreen = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1
+
   const [errorModal, setErrorModal] = useState(null)
+  
   const dispatch = useDispatch()
 
   const productList = useSelector((state) => state.productList)
@@ -83,7 +85,7 @@ const ProductListScreen = ({ history, match }) => {
   const clearErrorModal = () => {
     setErrorModal(null)
   }
-  
+
   const createProductHandler = () => {
     dispatch(createProduct())
   }
